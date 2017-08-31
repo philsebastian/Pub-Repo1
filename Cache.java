@@ -31,14 +31,15 @@ public class Cache<T> implements ICache<T> {
 		if (this.isEmpty()) {
 			return null;	
 		} else {
-			if (this.find(target, false)) {
+			DLLNode<T> targetNode = this.find(target);
+			if (targetNode != null) { // Make this into a retrieval of a node
 				this.hits++;
+				this.moveToFront(targetNode);
 				return target;
 			} else {
 				return null;
 			}
 		}
-		// PHIL TODO - does this need to return the founded item in the cache?
 	}
 
 	@Override
@@ -47,7 +48,6 @@ public class Cache<T> implements ICache<T> {
 		this.hits = 0;
 		this.access = 0;
 		this.cacheSize = 0;
-		// PHIL TODO - does this clear the rest of the list? should it?
 	}
 
 	@Override
@@ -65,7 +65,6 @@ public class Cache<T> implements ICache<T> {
 		} 		
 		this.head = tmpNode;
 		this.cacheSize++;
-		// PHIL TODO - Check boundaries! What about adding to 0 size, 1 size, 2 size, n-size??		
 	}
 
 	@Override
@@ -73,19 +72,16 @@ public class Cache<T> implements ICache<T> {
 		if (this.isEmpty()) {
 			throw new IllegalStateException();
 		}
-		this.tail.getPrevious().setNext(null);
-		this.tail = this.tail.getPrevious();
-		this.cacheSize--;
-		// PHIL TODO - check this that it is correct
-		
+		this.removeNode(this.tail);
 	}
 
 	@Override
 	public void remove(T target) {
-		if (!this.find(target, true)) {
+		DLLNode<T> targetNode = this.find(target);
+		if (targetNode == null) {
 			throw new NoSuchElementException();
 		}
-		// PHIL TODO - check this		
+		this.removeNode(targetNode);
 	}
 
 	@Override
@@ -95,7 +91,7 @@ public class Cache<T> implements ICache<T> {
 	}
 
 	@Override
-	public double getHitRate() {
+	public double getHitRate() { // PHIL TODO - Ask professor about his versus the write-up
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -108,18 +104,42 @@ public class Cache<T> implements ICache<T> {
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return (this.cacheSize == 0);
 	}
 	
-	/*
-	 * Searches the cache for target and if indicated to remove when called, will remove from list
+	/**
+	 * Searches the cache for target and returns node if found else returns null
 	 * @param target - object of type T  
-	 * @param remove - indicates whether to remove target T from list if found
+	 * @return DLLNode that contains target if found else null
 	 */
-	private boolean find (T target, boolean remove) {
-		// PHIL TODO - write this algorithm to search and if to remove the remove first T target; return false if not found
-		// look at element!!
-		return false;
+	private DLLNode<T> find (T target) {
+		DLLNode<T> currentNode = this.head;
+		while (currentNode.getNext() != null && !currentNode.getElement().equals(target)) {
+			currentNode = currentNode.getNext();
+		}
+		if (currentNode.getElement().equals(target)) {						
+			return currentNode;
+		} else {
+			return null;
+		}		
+	}
+	
+	private void moveToFront(DLLNode<T> theNode) {
+		if (theNode != this.head) {
+			if (theNode == this.tail) {
+				this.tail = theNode.getPrevious();
+				this.tail.setNext(null);
+			} else {
+				theNode.getPrevious().setNext(theNode.getNext());
+				theNode.getNext().setPrevious(theNode.getPrevious());
+			}
+			theNode.setNext(this.head);
+			theNode.setPrevious(null);
+			this.head = theNode;
+		}
+	}
+	
+	private void removeNode(DLLNode<T> theNode) {
+		
 	}
 }
