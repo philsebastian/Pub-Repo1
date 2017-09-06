@@ -1,4 +1,5 @@
 import java.io.*;
+import java.text.NumberFormat;
 import java.util.StringTokenizer;
 /**
  * 
@@ -16,6 +17,7 @@ public class Test {
 	private boolean secondCache;
 	private Cache<String> firstLevelCache;
 	private Cache<String> secondLevelCache;
+	private NumberFormat formatter;
 	
 	/**
 	 * 
@@ -25,6 +27,7 @@ public class Test {
 		this.firstLevelCache = new Cache<String> (firstLevelCacheSize);
 		this.secondLevelCache = null;
 		this.secondCache = false;
+		this.initializeDecimals();
 	}
 	
 	/**
@@ -36,6 +39,12 @@ public class Test {
 		this.firstLevelCache = new Cache<String> (firstLevelCacheSize);
 		this.secondLevelCache = new Cache<String> (secondLevelCacheSize);
 		this.secondCache = true;
+		this.initializeDecimals();
+	}
+	
+	private void initializeDecimals() {
+		this.formatter = NumberFormat.getNumberInstance();
+		this.formatter.setMinimumFractionDigits(2);
 	}
 	
 	/**
@@ -73,14 +82,14 @@ public class Test {
 			}		
 		returnString.append("\n. . .");
 		returnString.append("\nNumber of L1 hits: " + this.firstLevelCache.getHits()); 
-		returnString.append("\nL1 Hit rate: " + this.firstLevelCache.getHitRate()); //PHIL TODO -- format hit rate correctly
+		returnString.append("\nL1 Hit rate: " + this.formatter.format((this.firstLevelCache.getHitRate()* 100)) + "%"); //PHIL TODO -- format hit rate correctly
 		returnString.append("\n");
 		if (this.secondCache) {
 			adjustedSecondHits = this.secondLevelCache.getHits() - this.firstLevelCache.getHits(); 
 			returnString.append("\nNumber of L1 hits: " + adjustedSecondHits); 
 			returnString.append("\nL2 Hit rate: "); 
 			int adjustedSecondAccess = this.secondLevelCache.getAccess() - this.firstLevelCache.getHits();				
-			returnString.append(((double) adjustedSecondHits / (double) adjustedSecondAccess )); //PHIL TODO -- format hit rate correctly			
+			returnString.append(this.formatter.format((((double) adjustedSecondHits / (double) adjustedSecondAccess))* 100) + "%"); //PHIL TODO -- format hit rate correctly			
 			returnString.append("\n");
 		}
 		returnString.append("\nTotal number of accesses: " + this.firstLevelCache.getAccess());
@@ -92,7 +101,7 @@ public class Test {
 		}
 		
 		returnString.append(totalHits);
-		returnString.append("\nOverall hit rate: " + this.secondLevelCache.getHitRate()); // PHIL TODO -- format double percentage
+		returnString.append("\nOverall hit rate: " + this.formatter.format((this.secondLevelCache.getHitRate()* 100)) + "%"); // PHIL TODO -- format double percentage
 		return returnString.toString();
 	}
 	
