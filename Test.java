@@ -61,8 +61,18 @@ public class Test {
 	
 	@Override
 	public String toString () { 
-		StringBuilder returnString = new StringBuilder();		
-		// PHIL TODO
+		StringBuilder returnString = new StringBuilder();
+		returnString.append(this.firstLevelCache.toStringCreationInfo("L1"));
+		if (this.secondCache) {
+			returnString.append(this.secondLevelCache.toStringCreationInfo("L2"));			
+		}
+		returnString.append("\n. . .");
+		returnString.append(this.firstLevelCache.toStringHitInfo("L1"));
+		if (this.secondCache) {
+			returnString.append("\n");
+			returnString.append(this.secondLevelCache.toStringHitInfo("L2"));			
+		}
+		// PHIL TODO -- write total access string information
 		return returnString.toString();
 	}
 	
