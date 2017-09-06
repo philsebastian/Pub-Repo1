@@ -39,6 +39,7 @@ public class Cache<T> implements ICache<T> {
 	@Override
 	public void clear() {		
 		this.head = null;
+		this.tail = null;
 		this.hits = 0;
 		this.access = 0;
 		this.cacheSize = 0;
@@ -46,10 +47,10 @@ public class Cache<T> implements ICache<T> {
 
 	@Override
 	public void add(T data) {
-		if (!(this.cacheSize < this.MAX_SIZE)) {
+		if (!(this.cacheSize < this.MAX_SIZE)) { // If the size equals (or exceeds the maximum) remove the last element
 			this.removeLast();
 		}
-		DLLNode<T> tmpNode = new DLLNode<T>(data);
+		DLLNode<T> tmpNode = new DLLNode<T>(data); // Create a new node with the data as the element and insert it.
 		tmpNode.setNext(this.head);		
 		if (this.isEmpty()) { 
 			this.tail = tmpNode;
@@ -58,12 +59,12 @@ public class Cache<T> implements ICache<T> {
 			tmpNode.setNext(this.head);
 		} 		
 		this.head = tmpNode;
-		this.cacheSize++;
+		this.cacheSize++; // Increment size
 	}
 
 	@Override
 	public void removeLast() {
-		if (this.isEmpty()) {
+		if (this.isEmpty()) { // Check if empty, if so throw exception.
 			throw new IllegalStateException();
 		} else {
 		this.removeNode(this.tail);
@@ -93,7 +94,7 @@ public class Cache<T> implements ICache<T> {
 	}
 
 	@Override
-	public double getHitRate() { // PHIL TODO - Ask professor about his versus the write-up
+	public double getHitRate() { 
 		if (this.access > 0) {
 			return ((double) this.hits / (double) this.access);
 		} else {
@@ -118,7 +119,7 @@ public class Cache<T> implements ICache<T> {
 	 */
 	private DLLNode<T> find (T target) {
 		DLLNode<T> currentNode = this.head;
-		while (currentNode.getNext() != null && !currentNode.getElement().equals(target)) {
+		while (currentNode.getNext() != null && !currentNode.getElement().equals(target)) { // Run until end of list or target found
 			currentNode = currentNode.getNext();
 		}
 		if (currentNode.getElement().equals(target)) {						
@@ -156,10 +157,10 @@ public class Cache<T> implements ICache<T> {
 	}
 
 	/**
-	 * 
+	 * Private method used to remove a node
 	 * @param theNode
 	 */
-	private void removeNode(DLLNode<T> theNode) {  // PHIL TODO -- something is wrong in either this code or where it is called
+	private void removeNode(DLLNode<T> theNode) {  
 		if (theNode.getPrevious() == null && theNode.getNext() == null) { // theNode is head and tail
 			this.head = null;
 			this.tail = null;

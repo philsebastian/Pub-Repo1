@@ -49,7 +49,7 @@ public class Test {
 	private void searchCaches (String s) {
 		if (this.firstLevelCache.get(s) == null) {
 			this.firstLevelCache.add(s);
-			if (this.secondCache) {
+			if (this.secondCache) { // Only check second level if it should exist
 				if (this.secondLevelCache.get(s) == null) {
 					this.secondLevelCache.add(s);
 				}
@@ -134,66 +134,66 @@ public class Test {
 		} 
 		
 		switch (arg0) {
-		case 1:
-			if (args.length != 3) {
+			case 1:
+				if (args.length != 3) {
+					System.err.println(COMMANDLINE_INSTRUCTIONS);
+					System.exit(1);
+				} 
+				
+				try {
+					arg1 = Integer.parseInt(args[1]); 
+				} catch (NumberFormatException e) {
+					System.err.println(CACHE_SIZE_NOINT_ERROR);
+					System.exit(1);
+				}
+				
+				if (arg1 < 0) {
+					System.err.println(CACHE_SIZE_NOINT_ERROR);
+					System.exit(1);
+				} 
+				
+				fileName = args[2]; 
+				thisTest = new Test(arg1);	
+				break;
+			case 2:
+				if (args.length != 4) {
+					System.err.println(COMMANDLINE_INSTRUCTIONS);
+					System.exit(1);
+				}
+				
+				try {
+					arg1 = Integer.parseInt(args[1]); 
+				} catch (NumberFormatException e) {
+					System.err.println(CACHE_SIZE_NOINT_ERROR);
+					System.exit(1);
+				}
+				
+				try {
+					arg2 = Integer.parseInt(args[2]); 
+				} catch (NumberFormatException e) {
+					System.err.println(CACHE_SIZE_NOINT_ERROR);
+					System.exit(1);
+				}
+				
+				if (arg1 < 0) {
+					System.err.println(CACHE_SIZE_NOINT_ERROR);
+					System.exit(1);
+				} 
+				if (arg2 < 0) {
+					System.err.println(CACHE_SIZE_NOINT_ERROR);
+					System.exit(1);
+				} 
+				if (arg2 < arg1) {
+					System.err.println(CACHE2_SIZE_ERROR);
+					System.exit(1);
+				} 
+				fileName = args[3]; 
+				thisTest = new Test(arg1, arg2);
+				break;
+			default:
 				System.err.println(COMMANDLINE_INSTRUCTIONS);
 				System.exit(1);
-			} 
-			
-			try {
-				arg1 = Integer.parseInt(args[1]); 
-			} catch (NumberFormatException e) {
-				System.err.println(CACHE_SIZE_NOINT_ERROR);
-				System.exit(1);
-			}
-			
-			if (arg1 < 0) {
-				System.err.println(CACHE_SIZE_NOINT_ERROR);
-				System.exit(1);
-			} 
-			
-			fileName = args[2]; 
-			thisTest = new Test(arg1);	
-			break;
-		case 2:
-			if (args.length != 4) {
-				System.err.println(COMMANDLINE_INSTRUCTIONS);
-				System.exit(1);
-			}
-			
-			try {
-				arg1 = Integer.parseInt(args[1]); 
-			} catch (NumberFormatException e) {
-				System.err.println(CACHE_SIZE_NOINT_ERROR);
-				System.exit(1);
-			}
-			
-			try {
-				arg2 = Integer.parseInt(args[2]); 
-			} catch (NumberFormatException e) {
-				System.err.println(CACHE_SIZE_NOINT_ERROR);
-				System.exit(1);
-			}
-			
-			if (arg1 < 0) {
-				System.err.println(CACHE_SIZE_NOINT_ERROR);
-				System.exit(1);
-			} 
-			if (arg2 < 0) {
-				System.err.println(CACHE_SIZE_NOINT_ERROR);
-				System.exit(1);
-			} 
-			if (arg2 < arg1) {
-				System.err.println(CACHE2_SIZE_ERROR);
-				System.exit(1);
-			} 
-			fileName = args[3]; 
-			thisTest = new Test(arg1, arg2);
-			break;
-		default:
-			System.err.println(COMMANDLINE_INSTRUCTIONS);
-			System.exit(1);
-			break;
+				break;
 		}	
 		
 		thisTest.processFile(fileName);
