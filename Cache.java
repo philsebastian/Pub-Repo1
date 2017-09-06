@@ -177,13 +177,24 @@ public class Cache<T> implements ICache<T> {
 		}
 		this.cacheSize--;
 	}
-	
+	/**
+	 * Getter for number of accesses to the cache
+	 * @return
+	 */
 	public int getAccess() {
 		return this.access;
 	}
+	/**
+	 * Getter for number of hits in the cache
+	 * @return
+	 */
 	public int getHits() {
 		return this.hits;
 	}
+	/**
+	 * Getter for the max sized specified for the cache
+	 * @return
+	 */
 	public int getMaxSize() {
 		return this.MAX_SIZE;
 	}
