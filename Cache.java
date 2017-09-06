@@ -1,10 +1,6 @@
 import java.util.NoSuchElementException;
 
 /**
- * 
- */
-
-/**
  * @author Phillip Sebastian
  *
  */
@@ -16,6 +12,10 @@ public class Cache<T> implements ICache<T> {
 	private DLLNode<T> head;
 	private DLLNode<T> tail;
 	
+	/**
+	 * Constructor to create a cache with a maximum number of elements as defined by the maxSize parameter
+	 * @param maxSize - Integer indicating the maximum size of the cache
+	 */
 	public Cache(int maxSize){
 		this.MAX_SIZE = maxSize;
 		this.cacheSize = 0;
@@ -26,19 +26,16 @@ public class Cache<T> implements ICache<T> {
 	}
 	
 	@Override
-	public T get(T target) {
-		this.access++;
+	public T get(T target) {		
 		if (this.isEmpty()) {
+			this.access++;
 			return null;	
 		} else {
-			DLLNode<T> targetNode = this.find(target);
-			if (targetNode != null) { // Make this into a retrieval of a node
+			T retData = this.accessData(target);
+			if (retData != null) {
 				this.hits++;
-				this.moveToFront(targetNode);
-				return target;
-			} else {
-				return null;
 			}
+			return retData;
 		}
 	}
 
@@ -71,8 +68,9 @@ public class Cache<T> implements ICache<T> {
 	public void removeLast() {
 		if (this.isEmpty()) {
 			throw new IllegalStateException();
-		}
+		} else {
 		this.removeNode(this.tail);
+		}	
 	}
 
 	@Override
@@ -80,26 +78,38 @@ public class Cache<T> implements ICache<T> {
 		DLLNode<T> targetNode = this.find(target);
 		if (targetNode == null) {
 			throw new NoSuchElementException();
-		}
-		this.removeNode(targetNode);
+		} else {
+			this.removeNode(targetNode);
+		}		
 	}
 
 	@Override
 	public void write(T data) {
-		// TODO Auto-generated method stub
-		
+		if (this.isEmpty()) {
+			throw new NoSuchElementException();
+		} else {
+			T result = this.accessData(data);
+			if (result == null) {
+				throw new NoSuchElementException();
+			} else {
+				this.hits++;
+			}	
+		}		
 	}
 
 	@Override
 	public double getHitRate() { // PHIL TODO - Ask professor about his versus the write-up
-		// TODO Auto-generated method stub
-		return 0;
+		if (this.access > 0) {
+			return ((double) this.hits / (double) this.access);
+		} else {
+			return 0;
+		}
+
 	}
 
 	@Override
 	public double getMissRate() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (1 - this.getHitRate());
 	}
 
 	@Override
@@ -124,6 +134,28 @@ public class Cache<T> implements ICache<T> {
 		}		
 	}
 	
+	/**
+	 * Private method to search for T target, if found move to front and return target else returns null
+	 * @param target - object of type T
+	 * @return returns T target if found else returns null
+	 */
+	private T accessData(T target) {
+		this.access++;
+		DLLNode<T> targetNode = this.find(target);
+		if (targetNode != null) { // Make this into a retrieval of a node
+			this.hits++;
+			this.moveToFront(targetNode);
+			return target;
+		} else {
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * Moves indicated node to the front of the cache
+	 * @param theNode - DLLNode of object T
+	 */
 	private void moveToFront(DLLNode<T> theNode) {
 		if (theNode != this.head) {
 			if (theNode == this.tail) {
@@ -138,8 +170,40 @@ public class Cache<T> implements ICache<T> {
 			this.head = theNode;
 		}
 	}
-	
+
+	/**
+	 * 
+	 * @param theNode
+	 */
 	private void removeNode(DLLNode<T> theNode) {
+		// PHIL TODO - WORK ON THIS
 		
+		this.cacheSize--;
+	}
+	
+	/**
+	 * 
+	 * @param cacheLevel
+	 * @return
+	 */
+	public String toStringCreation(String cacheLevel) { // PHIL TODO -- ask about this and other new public methods
+		StringBuilder retStr = new StringBuilder();
+		retStr.append("\t"+ cacheLevel);
+		retStr.append(" cach with " + this.MAX_SIZE);
+		retStr.append(" created.\n");
+		return retStr.toString();
+	}
+	
+	/**
+	 * 
+	 * @param cacheLevel
+	 * @return
+	 */
+	public String toStringHits(String cacheLevel) {
+		StringBuilder retStr = new StringBuilder();
+		retStr.append("\tNumber of " + cacheLevel);
+		retStr.append(" hits: " + this.hits);
+		retStr.append("\n" + cacheLevel + " Hit rate: " + this.getHitRate());
+		return retStr.toString();
 	}
 }
