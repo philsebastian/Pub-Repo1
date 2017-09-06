@@ -32,9 +32,6 @@ public class Cache<T> implements ICache<T> {
 			return null;	
 		} else {
 			T retData = this.accessData(target);
-			if (retData != null) {
-				this.hits++;
-			}
 			return retData;
 		}
 	}
@@ -91,9 +88,7 @@ public class Cache<T> implements ICache<T> {
 			T result = this.accessData(data);
 			if (result == null) {
 				throw new NoSuchElementException();
-			} else {
-				this.hits++;
-			}	
+			} 
 		}		
 	}
 
@@ -104,7 +99,6 @@ public class Cache<T> implements ICache<T> {
 		} else {
 			return 0;
 		}
-
 	}
 
 	@Override
@@ -157,54 +151,31 @@ public class Cache<T> implements ICache<T> {
 	 * @param theNode - DLLNode of object T
 	 */
 	private void moveToFront(DLLNode<T> theNode) {
-		if (theNode != this.head) {
-			if (theNode == this.tail) {
-				this.tail = theNode.getPrevious();
-				this.tail.setNext(null);
-			} else {
-				theNode.getPrevious().setNext(theNode.getNext());
-				theNode.getNext().setPrevious(theNode.getPrevious());
-			}
-			theNode.setNext(this.head);
-			theNode.setPrevious(null);
-			this.head = theNode;
-		}
+		this.removeNode(theNode);
+		this.add(theNode.getElement());
 	}
 
 	/**
 	 * 
 	 * @param theNode
 	 */
-	private void removeNode(DLLNode<T> theNode) {
-		// PHIL TODO - WORK ON THIS
-		
+	private void removeNode(DLLNode<T> theNode) {  // PHIL TODO -- something is wrong in either this code or where it is called
+		if (theNode.getPrevious() == null && theNode.getNext() == null) { // theNode is head and tail
+			this.head = null;
+			this.tail = null;
+		} else { 
+			if (theNode.getPrevious() == null) { // theNode is head;
+				theNode.getNext().setPrevious(null);
+				this.head = theNode.getNext();
+			} else if (theNode.getNext() == null) { // theNode is tail;
+				theNode.getPrevious().setNext(null);
+				this.tail = theNode.getPrevious();
+			} else {
+				theNode.getPrevious().setNext(theNode.getNext());
+				theNode.getNext().setPrevious(theNode.getPrevious());
+			}
+		}
 		this.cacheSize--;
-	}
-	
-	/**
-	 * 
-	 * @param cacheLevel
-	 * @return
-	 */
-	public String toStringCreationInfo(String cacheLevel) { // PHIL TODO -- ask about this and other new public methods
-		StringBuilder retStr = new StringBuilder();
-		retStr.append("\n" + cacheLevel);
-		retStr.append(" cach with " + this.MAX_SIZE);
-		retStr.append(" created.\n");
-		return retStr.toString();
-	}
-	
-	/**
-	 * 
-	 * @param cacheLevel
-	 * @return
-	 */
-	public String toStringHitInfo(String cacheLevel) {
-		StringBuilder retStr = new StringBuilder();
-		retStr.append("\nNumber of " + cacheLevel);
-		retStr.append(" hits: " + this.hits);
-		retStr.append("\n" + cacheLevel + " Hit rate: " + this.getHitRate()); //PHIL TODO -- format hit rate correctly
-		return retStr.toString();
 	}
 	
 	public int getAccess() {
@@ -212,5 +183,8 @@ public class Cache<T> implements ICache<T> {
 	}
 	public int getHits() {
 		return this.hits;
+	}
+	public int getMaxSize() {
+		return this.MAX_SIZE;
 	}
 }

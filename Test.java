@@ -61,18 +61,38 @@ public class Test {
 	
 	@Override
 	public String toString () { 
+		int adjustedSecondHits = 0;
 		StringBuilder returnString = new StringBuilder();
-		returnString.append(this.firstLevelCache.toStringCreationInfo("L1"));
+		returnString.append("\nL1");
+		returnString.append(" cache with " + this.firstLevelCache.getMaxSize());
+		returnString.append(" entries created.");		
 		if (this.secondCache) {
-			returnString.append(this.secondLevelCache.toStringCreationInfo("L2"));			
-		}
+			returnString.append("\nL2");
+			returnString.append(" cache with " + this.secondLevelCache.getMaxSize());
+			returnString.append(" entries created.");
+			}		
 		returnString.append("\n. . .");
-		returnString.append(this.firstLevelCache.toStringHitInfo("L1"));
+		returnString.append("\nNumber of L1 hits: " + this.firstLevelCache.getHits()); 
+		returnString.append("\nL1 Hit rate: " + this.firstLevelCache.getHitRate()); //PHIL TODO -- format hit rate correctly
+		returnString.append("\n");
 		if (this.secondCache) {
+			adjustedSecondHits = this.secondLevelCache.getHits() - this.firstLevelCache.getHits(); 
+			returnString.append("\nNumber of L1 hits: " + adjustedSecondHits); 
+			returnString.append("\nL2 Hit rate: "); 
+			int adjustedSecondAccess = this.secondLevelCache.getAccess() - this.firstLevelCache.getHits();				
+			returnString.append(((double) adjustedSecondHits / (double) adjustedSecondAccess )); //PHIL TODO -- format hit rate correctly			
 			returnString.append("\n");
-			returnString.append(this.secondLevelCache.toStringHitInfo("L2"));			
 		}
-		// PHIL TODO -- write total access string information
+		returnString.append("\nTotal number of accesses: " + this.firstLevelCache.getAccess());
+		returnString.append("\nTotal number of hits: ");
+		
+		int totalHits = this.firstLevelCache.getHits();
+		if (this.secondCache) {
+			totalHits += adjustedSecondHits;
+		}
+		
+		returnString.append(totalHits);
+		returnString.append("\nOverall hit rate: " + this.secondLevelCache.getHitRate()); // PHIL TODO -- format double percentage
 		return returnString.toString();
 	}
 	
