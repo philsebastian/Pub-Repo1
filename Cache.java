@@ -186,9 +186,9 @@ public class Cache<T> implements ICache<T> {
 	 * @param cacheLevel
 	 * @return
 	 */
-	public String toStringCreation(String cacheLevel) { // PHIL TODO -- ask about this and other new public methods
+	public String toStringCreationInfo(String cacheLevel) { // PHIL TODO -- ask about this and other new public methods
 		StringBuilder retStr = new StringBuilder();
-		retStr.append("\t"+ cacheLevel);
+		retStr.append(cacheLevel);
 		retStr.append(" cach with " + this.MAX_SIZE);
 		retStr.append(" created.\n");
 		return retStr.toString();
@@ -199,11 +199,18 @@ public class Cache<T> implements ICache<T> {
 	 * @param cacheLevel
 	 * @return
 	 */
-	public String toStringHits(String cacheLevel) {
+	public String toStringHitInfo(String cacheLevel) {
 		StringBuilder retStr = new StringBuilder();
-		retStr.append("\tNumber of " + cacheLevel);
+		retStr.append("Number of " + cacheLevel);
 		retStr.append(" hits: " + this.hits);
 		retStr.append("\n" + cacheLevel + " Hit rate: " + this.getHitRate());
 		return retStr.toString();
+	}
+	
+	public int getAccess() {
+		return this.access;
+	}
+	public int getHits() {
+		return this.hits;
 	}
 }

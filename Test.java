@@ -13,10 +13,6 @@ public class Test {
 	private static final String COMMANDLINE_INSTRUCTIONS = "This program requires the following startup parameters.\nFor one cache: 1 <cache size as Int> <input filename>For two caches: 2 <cache size as Int of 1st cache> <cache size as Int of 2nd cache and needs to be larger than cache 1> <input filename>";
 	private static final String FILE_NOT_FOUND = "Unable to locate or read file: ";
 	
-	private int firstCacheHits;
-	private int secondCacheHits;
-	private int firstCacheReferences;
-	private int totalCacheReferences;
 	private boolean secondCache;
 	private Cache<String> firstLevelCache;
 	private Cache<String> secondLevelCache;
@@ -29,10 +25,6 @@ public class Test {
 		this.firstLevelCache = new Cache<String> (firstLevelCacheSize);
 		this.secondLevelCache = null;
 		this.secondCache = false;
-		this.firstCacheHits = 0;
-		this.secondCacheHits = 0;
-		this.firstCacheReferences = 0;
-		this.totalCacheReferences = 0;		
 	}
 	
 	/**
@@ -44,21 +36,6 @@ public class Test {
 		this.firstLevelCache = new Cache<String> (firstLevelCacheSize);
 		this.secondLevelCache = new Cache<String> (secondLevelCacheSize);
 		this.secondCache = true;
-		this.firstCacheHits = 0;
-		this.secondCacheHits = 0;
-		this.firstCacheReferences = 0;
-		this.totalCacheReferences = 0;
-	}
-	
-	/**
-	 * 
-	 * @param s
-	 */
-	private void addToCaches(String s) {
-		this.firstLevelCache.add(s);
-		if (this.secondCache) {
-			this.secondLevelCache.add(s);
-		}
 	}
 	
 	/**
@@ -66,87 +43,26 @@ public class Test {
 	 * @param s
 	 */
 	private void searchCaches (String s) {
-		this.totalCacheReferences++;
 		String retString = this.firstLevelCache.get(s);
-		if (retString != null) {
-			this.firstCacheHits++;
-			this.firstCacheReferences++;
-			this.secondLevelCache.get(s);
-		} else {
+		if (retString == null) {
+			this.firstLevelCache.add(s);
 			if (this.secondCache) {
 				retString = this.secondLevelCache.get(s);
-				if (retString != null) {
-					this.secondCacheHits++;
-					this.firstLevelCache.add(s);
+				if (retString == null) {
+					this.secondLevelCache.add(s);
 				}
+			}			
+		} else {
+			String secRetString = this.secondLevelCache.get(s);
+			if (secRetString == null) { // This should never occur
+				this.secondLevelCache.add(s);
 			}
-		}
-		if (retString == null) {
-			this.addToCaches(s);
 		}
 	}
 	
 	@Override
 	public String toString () { 
-		StringBuilder returnString = new StringBuilder();
-		int totalCacheHits;
-		double globalRatio, level1Ratio, level2Ratio;
-		
-		returnString.append("First level cache with ");		
-		// TODO - returnString.append(firstLevelCache.getMaxSize());
-		returnString.append(" entries has been created.");
-		returnString.append("\n");		
-		if (secondCache) {
-			returnString.append("Second level cache with ");		
-			// TODO - returnString.append(secondLevelCache.getMaxSize());
-			returnString.append(" entries has been created.");
-			returnString.append("\n");		
-		}
-		returnString.append("..............................");		
-		returnString.append("\n");
-		
-		returnString.append("Total number of references:");		
-		returnString.append("\t\t");		
-		returnString.append(this.totalCacheReferences);		
-		returnString.append("\n");		
-		returnString.append("Total number of cache hits:");		
-		returnString.append("\t\t");
-		
-		if (secondCache) {
-			totalCacheHits = this.firstCacheHits + this.secondCacheHits;
-		} else {
-			totalCacheHits = this.firstCacheHits;
-		}
-		returnString.append(totalCacheHits);
-		returnString.append("\n");
-		
-		returnString.append("The global hit ratio:");		
-		returnString.append("\t\t\t");		
-		globalRatio = (double) totalCacheHits / (double) this.totalCacheReferences;
-		returnString.append(globalRatio);		
-		returnString.append("\n");	
-		
-		returnString.append("Number of 1st-level cache hits:");		
-		returnString.append("\t\t");
-		returnString.append(this.firstCacheHits);
-		returnString.append("\n");	
-		returnString.append("1st-level cache hit ratio:");		
-		returnString.append("\t\t");
-		level1Ratio = (double) this.firstCacheHits / (double) this.totalCacheReferences;
-		returnString.append(level1Ratio);		
-		returnString.append("\n");	
-		
-		if (secondCache) {
-			returnString.append("Number of 2nd-level cache hits:");		
-			returnString.append("\t\t");
-			returnString.append(this.secondCacheHits);
-			returnString.append("\n");	
-			returnString.append("2nd-level cache hit ratio:");		
-			returnString.append("\t\t");
-			level2Ratio = (double) this.secondCacheHits / (double) (this.totalCacheReferences - this.firstCacheReferences);
-			returnString.append(level2Ratio);		
-			returnString.append("\n");	
-		}
+		StringBuilder returnString = new StringBuilder();		
 		
 		return returnString.toString();
 	}
