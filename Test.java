@@ -43,19 +43,18 @@ public class Test {
 	 * @param s
 	 */
 	private void searchCaches (String s) {
-		String retString = this.firstLevelCache.get(s);
-		if (retString == null) {
+		if (this.firstLevelCache.get(s) == null) {
 			this.firstLevelCache.add(s);
 			if (this.secondCache) {
-				retString = this.secondLevelCache.get(s);
-				if (retString == null) {
+				if (this.secondLevelCache.get(s) == null) {
 					this.secondLevelCache.add(s);
 				}
 			}			
 		} else {
-			String secRetString = this.secondLevelCache.get(s);
-			if (secRetString == null) { // This should never occur
-				this.secondLevelCache.add(s);
+			if (this.secondCache) {
+				if (this.secondLevelCache.get(s) == null) { // This should never occur
+					this.secondLevelCache.add(s);
+				}
 			}
 		}
 	}
@@ -63,7 +62,7 @@ public class Test {
 	@Override
 	public String toString () { 
 		StringBuilder returnString = new StringBuilder();		
-		
+		// PHIL TODO
 		return returnString.toString();
 	}
 	
