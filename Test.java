@@ -1,5 +1,4 @@
 import java.io.*;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.StringTokenizer;
 /**
@@ -21,8 +20,8 @@ public class Test {
 	private DecimalFormat dFormat;
 	
 	/**
-	 * 
-	 * @param firstLevelCacheSize
+	 * Constructor for creating a Test object with one cache for string objects
+	 * @param firstLevelCacheSize - number of objects stored in cache
 	 */
 	private Test (int firstLevelCacheSize) {
 		this.firstLevelCache = new Cache<String> (firstLevelCacheSize);
@@ -32,9 +31,9 @@ public class Test {
 	}
 	
 	/**
-	 * 
-	 * @param firstLevelCacheSize
-	 * @param secondLevelCacheSize
+	 * Constructor for creating a Test object with two caches for string objects
+	 * @param firstLevelCacheSize - number of objects stored in L1 cache
+	 * @param secondLevelCacheSize - number of objects stored in L2 cache
 	 */
 	private Test (int firstLevelCacheSize, int secondLevelCacheSize) {
 		this.firstLevelCache = new Cache<String> (firstLevelCacheSize);
@@ -44,8 +43,8 @@ public class Test {
 	}
 	
 	/**
-	 * 
-	 * @param s
+	 * Method for the Test object to search the cache(s) for string s
+	 * @param s - String object to search in cache
 	 */
 	private void searchCaches (String s) {
 		if (this.firstLevelCache.get(s) == null) {
@@ -63,9 +62,12 @@ public class Test {
 			}
 		}
 	}
-	
+	/**
+	 * Method overrides toString to provide desired output.
+	 * @return - formatted string
+	 */
 	@Override
-	public String toString () { 
+	public String toString() { 
 		int adjustedSecondHits = 0;
 		double tmpResult = 0.0;
 		StringBuilder returnString = new StringBuilder();
@@ -106,8 +108,8 @@ public class Test {
 	}
 	
 	/**
-	 * 
-	 * @param args
+	 * Main method of java class, used for running the application
+	 * @param args - command line arguments needed. # of caches, size of each cache specified individually, file to review
 	 */
 	public static void main (String[] args) {
 		String fileName = null;
@@ -199,8 +201,8 @@ public class Test {
 	}
 	
 	/**
-	 * 
-	 * @param fileName
+	 * Method used by Test objects to review file and printout results to the console. 
+	 * @param fileName - Name of file to review
 	 */
 	public void processFile(String fileName) {
 		
