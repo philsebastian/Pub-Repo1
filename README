@@ -1,0 +1,115 @@
+****************
+* Lab 1: Memory Cache
+* CS321
+* 7 September 2017
+* Phillip Sebastian
+**************** 
+
+OVERVIEW:
+
+ The program imitates a cache and outputs statistics based on the
+ values used to initiate the cache objects.
+
+
+INCLUDED FILES:
+ 
+ DLLNode.java - provided file used for implementing nodes and lists
+ in Cache.java.
+ ICache.java - provided interface needed for creating and compiling
+ Cache.java
+ Cache.java - java source code used for compiling and creating the
+ Cache class.
+ Test.java - Main application file used to create cache objects and 
+ parse a text file. 
+ README - this file
+
+
+COMPILING AND RUNNING:
+
+ From the directory containing all source files, compile the
+ driver class (and all dependencies) with the command:
+ $ javac Test.java
+
+ The compiled class file will need command-line arguments to indicate
+ 1 or 2 caches, size of each cache, and then the path to a text file to
+ parse. Note that if two caches selected the size of the second cache
+ should be larger than the first. If a size for the second is set to be
+ smaller, you will receive an error message.
+ 
+ Run the compiled class for one cache in the pattern that follows 
+ replacing the bracketed information as necessary:
+ $ java Test 1 [1000] [filename.txt]
+
+ Run the compiled class for two caches in the pattern that follows 
+ replacing the bracketed information as necessary:
+ $ java Test 2 [1000] [2000] [filename.txt]
+
+ Console output will give the results after the program finishes.
+
+
+PROGRAM DESIGN AND IMPORTANT CONCEPTS:
+ 
+ Test.java will take command-line arguments to create up to two cache
+ objects, parse the designated file putting each word as a string object
+ into the cache, and at the end provide an output for the performance
+ (hits, access, and hit rate) of each cache. Test.java will ensure that
+ the command-line arguments conform to the expectation and if not provide
+ further instructions for launching the application.
+ 
+ When Test.java parses a word it will first look to see if the word is in
+ the cache. If it is found, the program continues to the next word. If not,
+ the program adds it to the cache. This step will be performed on the smaller
+ cache and then the larger cache if it has been initialized. To get the output
+ the application creates a string using the underlying methods in the cache
+ objects to get the number of accesses and hits.
+ 
+ Cache.java implements the ICache.java interface. It uses DLLNode.java to
+ create a list similar to a doubly-linked list. When the cache object is
+ initialized it has a max size and whenever an object is added to the list
+ it first checks to make sure that the current size of the cache is smaller
+ than the max, if not it removes the last entry. Whenever the list is searched,
+ if the data is found in the list, that node is moved to the front. Accesses
+ occur whenever the object searches for a specified piece of data. Hits occur
+ only when the data is found.
+ 
+
+TESTING:
+
+ The biggest concern for testing I had was making sure the end-cases of 
+ node removal worked correctly. That is when the list had size of one or
+ when a head or a tail was removed. I used command line arguments and the
+ Eclipse debugger to test caches with limits of 1, 2, 3, 4, and 5 sizes
+ to test node addition, moving, and removal.
+
+ I also tested many combinations of command-line arguments to
+ ensure that only valid options would proceed through the application and
+ if an incorrect one was provided that it would instruct the user the
+ correct way to use the program.
+
+
+DISCUSSION:
+ 
+ My application only had two initial issues. I inadvertently had my hit 
+ variable increment in a second location this caused my output results to 
+ show double hit results. The second issue was related to an initial use of
+ the NumberFormat java class. I could not get this to reliably output to 
+ two decimal places. This issue was somewhat fortuitous as I located 
+ DecimalFormat java class which works all-around better.
+ 
+ I made a change early on to look at the getNext() and getPrevious() 
+ methods for the DLLNode instead of relying on my own head and tail variables
+ to determine if a node was head/tail. This was purely a style preference in 
+ the code that I did because I liked the way the if statements looked and I 
+ don't know that any different behavior occurs.
+ 
+ I would recommend adding accessor methods for the hit and access variable 
+ into the interface. Currently, the only listed methods are getHitRate and
+ getMissRate, however, those pieces of information are less useful for
+ Test.java. Also, the write method seems superfluous in the current 
+ implementation of the interface. It seems that get() provides more useful
+ information. If there is a different point to it, I didn't get it. 
+ 
+ 
+EXTRA CREDIT:
+
+ I was not aware of any extra credit options for this project.
